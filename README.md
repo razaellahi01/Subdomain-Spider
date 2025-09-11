@@ -74,7 +74,8 @@ output/
 
 ## Screenshots 📸
 
-[Add screenshots of your tool's output here]
+<img width="840" height="334" alt="image" src="https://github.com/user-attachments/assets/405bd003-dcf4-4451-abb7-9662b22fdb11" />
+
 
 ## Authors ✨
 
