@@ -7,7 +7,7 @@
 # ====================================
 # WORDLIST CONFIGURATION
 # ====================================
-WORDLIST_PATH="/home/raza/Desktop/list.txt"
+WORDLIST_PATH="<wordlist_location>"
 # Example: WORDLIST_PATH="/usr/share/wordlists/subdomains-top1million-110000.txt"
 
 # ====================================
