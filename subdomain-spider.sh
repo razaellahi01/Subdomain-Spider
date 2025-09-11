@@ -50,7 +50,7 @@ display_startup_banner() {
                                  🚀 Black Byt3 | TEAM VORTEX ⚡                               
                                                                                              
                                    👑 Team Lead: Raza Ellahi                                  
-            🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan           
+                    🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan           
                                                                                              
                                 Developed with ❤️ for Hunters                                
 
@@ -76,13 +76,17 @@ display_banner() {
     echo -e "${WHITE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
     echo ""
     # Separator & Team Tagline
-    echo "==========================================================="
-    echo "               🚀 Black Byt3 | TEAM VORTEX ⚡             "
-    echo "==========================================================="
+    echo "====================================================================="
+    echo "                      🚀 Black Byt3 | TEAM VORTEX ⚡                 "
+    echo "====================================================================="
     # Contributors
     echo "👑 Team Lead   : Raza Ellahi"
     echo "🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan"
     echo ""
+    echo "📌 Use a bash-compatible terminal (We prefer Kali Linux)"
+    echo "====================================================================="
+    echo ""
+    
 }
 
 # Function to display completion banners
