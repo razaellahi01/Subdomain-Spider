@@ -31,13 +31,13 @@ A robust and comprehensive subdomain enumeration tool that leverages multiple AP
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/subdomain-enum-tool.git
+git clone https://github.com/razaellahi01/Subdomain-Spider.git
 
 # Navigate to the project directory
-cd subdomain-enum-tool
+cd Subdomain-spider
 
 # Make the script executable
-chmod +x code.sh
+chmod +x subdomain-spider.sh
 ```
 
 ## Configuration ⚙️
@@ -57,16 +57,8 @@ nano config.sh
 ## Usage 💻
 
 ```bash
-./code.sh -d example.com
+bash subdomain-spider.sh
 ```
-
-### Options
-
-- `-d, --domain`: Target domain
-- `-w, --wordlist`: Custom wordlist path
-- `-t, --threads`: Number of threads
-- `-o, --output`: Output directory
-- `-h, --help`: Show help message
 
 ## Output Structure 📁
 
@@ -84,18 +76,6 @@ output/
 
 [Add screenshots of your tool's output here]
 
-## Contributing 🤝
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License 📝
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
 ## Authors ✨
 
 - **Raza Ellahi** - Team Lead
@@ -103,11 +83,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Jabir Ishaq**
 - **Abdlrehman Farid**
 - **Israr Khan**
-
-## Acknowledgments 🙏
-
-- Black Byt3 Internship Program
-- [Add any other acknowledgments]
 
 ## Disclaimer ⚠️
 
