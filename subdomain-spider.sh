@@ -26,7 +26,7 @@ SECURITYTRAILS_API_KEY=""
 MAX_THREADS=50
 TEAM_NAME="Team Vortex"
 TEAM_LEAD="Raza Ellahi"
-TEAM_MEMBERS="Laiqa Rafay, Jabir Ishaq, Israr Khan"
+TEAM_MEMBERS="Laiqa Rafay, Jabir Ishaq, Israr Khan, Ubaidullah Salman"
 PROJECT_NAME="Subdomdomains Enumeration Tool"
 HTTP_TIMEOUT=5
 DNS_TIMEOUT=3
@@ -50,7 +50,7 @@ display_startup_banner() {
                                  🚀 Black Byt3 | TEAM VORTEX ⚡                               
                                                                                              
                                    👑 Team Lead: Raza Ellahi                                  
-                    🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan           
+                    🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan, Ubaidullah Salman           
                                                                                              
                                 Developed with ❤️ for Hunters                                
 
@@ -81,7 +81,7 @@ display_banner() {
     echo "====================================================================="
     # Contributors
     echo "👑 Team Lead   : Raza Ellahi"
-    echo "🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan"
+    echo "🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan, Ubaidullah Salman"
     echo ""
     echo "📌 Use a bash-compatible terminal (We prefer Kali Linux)"
     echo "====================================================================="
