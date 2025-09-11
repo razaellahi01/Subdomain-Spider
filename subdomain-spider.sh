@@ -50,7 +50,7 @@ display_startup_banner() {
                                  🚀 Black Byt3 | TEAM VORTEX ⚡                               
                                                                                              
                                    👑 Team Lead: Raza Ellahi                                  
-            🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Abdlrehman Farid, Israr Khan           
+            🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan           
                                                                                              
                                 Developed with ❤️ for Hunters                                
 
@@ -81,7 +81,7 @@ display_banner() {
     echo "==========================================================="
     # Contributors
     echo "👑 Team Lead   : Raza Ellahi"
-    echo "🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Abdlrehman Farid, Israr Khan"
+    echo "🤝 Team Members: Laiqa Rafay, Jabir Ishaq, Israr Khan"
     echo ""
 }
 
