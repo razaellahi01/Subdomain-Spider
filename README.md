@@ -1,4 +1,4 @@
-# Team Vortex Subdomain Spider 🚀
+# Subdomain Spider - TEAM VORTEX🚀
 
 A robust and comprehensive subdomain enumeration tool that leverages multiple APIs and techniques to discover subdomains efficiently.
 
