@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Team Vortex Subdomain Enumeration Tool - Configuration File
+# Black Byt3 Internship Task 2
+# Configure all your settings here
+
+# ====================================
+# WORDLIST CONFIGURATION
+# ====================================
+WORDLIST_PATH="/home/raza/Desktop/list.txt"
+# Example: WORDLIST_PATH="/usr/share/wordlists/subdomains-top1million-110000.txt"
+
+# ====================================
+# PERFORMANCE CONFIGURATION
+# ====================================
+MAX_THREADS=70
+# Recommended: 20-100 threads depending on your system
+
+# ====================================
+# API KEYS CONFIGURATION
+# ====================================
+
+# VirusTotal API Key (Get from: https://www.virustotal.com/gui/my-apikey)
+VIRUSTOTAL_API_KEY="YOUR_VIRUSTOTAL_API_KEY_HERE"
+
+# Shodan API Key (Get from: https://account.shodan.io/)
+SHODAN_API_KEY="YOUR_SHODAN_API_KEY_HERE"
+
+# SecurityTrails API Key (Get from: https://securitytrails.com/corp/api)
+SECURITYTRAILS_API_KEY="YOUR_SECURITYTRAILS_API_KEY_HERE"
+
+# ====================================
+# TEAM INFORMATION
+# ====================================
+TEAM_NAME="Team Vortex"
+TEAM_LEAD="Raza Ellahi"
+TEAM_MEMBERS="Laiqa Rafay, Jabir Ishaq, Abdlrehman Farid, Israr Khan"
+PROJECT_NAME="Black Byt3 Internship Task 2"
+
+# ====================================
+# ADVANCED CONFIGURATION
+# ====================================
+
+# Timeout settings (in seconds)
+HTTP_TIMEOUT=5
+DNS_TIMEOUT=3
+
+# Output customization
+GENERATE_TEXT_REPORT=true
+GENERATE_HTML_REPORT=true
+INCLUDE_DEAD_SUBDOMAINS=true
+
+# API Rate Limiting (delay between requests in seconds)
+API_RATE_LIMIT=1
+
+# ====================================
+# INSTRUCTIONS
+# ====================================
+# 1. Update WORDLIST_PATH with your wordlist location
+# 2. Add your API keys in the respective fields
+# 3. Adjust MAX_THREADS based on your system capabilities
+# 4. Save this file as "config.sh" in the same directory as the main script
+# 5. Make sure the script has execute permissions: chmod +x code.sh
