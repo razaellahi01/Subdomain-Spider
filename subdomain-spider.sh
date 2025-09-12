@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Team Vortex Subdomain Enumeration Tool
-# Black Byt3 Internship Task 2
 # Author: Team Vortex - Pure Bash Implementation
 
 # Colors for output
