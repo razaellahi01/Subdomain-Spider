@@ -76,7 +76,7 @@ display_banner() {
     echo ""
     # Separator & Team Tagline
     echo "====================================================================="
-    echo "                      🚀 Black Byt3 | TEAM VORTEX ⚡                 "
+    echo "                      🚀 TEAM VORTEX ⚡                             "
     echo "====================================================================="
     # Contributors
     echo "👑 Team Lead   : Raza Ellahi"
