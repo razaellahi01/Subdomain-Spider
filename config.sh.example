@@ -23,7 +23,7 @@ MAX_THREADS=70
 VIRUSTOTAL_API_KEY="YOUR_VIRUSTOTAL_API_KEY_HERE"
 
 # Shodan API Key (Get from: https://account.shodan.io/)
-SHODAN_API_KEY="YOUR_SHODAN_API_KEY_HERE"
+# SHODAN_API_KEY="YOUR_SHODAN_API_KEY_HERE" # Disabling Shodan API until it get solved.
 
 # SecurityTrails API Key (Get from: https://securitytrails.com/corp/api)
 SECURITYTRAILS_API_KEY="YOUR_SECURITYTRAILS_API_KEY_HERE"
