@@ -88,17 +88,21 @@ display_banner() {
     
 }
 
-# Function to display completion banners
+# Function to display completion banners (Updated - Lines Highlighting)
 display_completion_banner() {
     local step_name="$1"
     local description="$2"
+    
+    # Create a separator line
+    local separator="================================================================================"
+    
     echo ""
-    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║                               ✅ STEP COMPLETED ✅                                   ║${NC}"
-    echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${WHITE}║  Step: ${YELLOW}$step_name${WHITE}                                                    ║${NC}"
-    echo -e "${WHITE}║  Info: ${CYAN}$description${WHITE}                                                    ║${NC}"
-    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${separator}"
+    echo -e "                            ${GREEN}✅ STEP COMPLETED ✅${NC}                           "
+    echo -e "${separator}"
+    echo -e "${WHITE}Step: ${YELLOW}$step_name${NC}"
+    echo -e "${WHITE}Info: ${CYAN}$description${NC}"
+    echo -e "${separator}"
     echo ""
     sleep 2
 }
@@ -789,7 +793,6 @@ generate_html_report() {
             <h2 style="text-align: center; margin-bottom: 15px;">👑 Team Information</h2>
             <p style="text-align: center;"><strong>Lead:</strong> $TEAM_LEAD</p>
             <p style="text-align: center;"><strong>Members:</strong> $TEAM_MEMBERS</p>
-            <p style="text-align: center;"><strong>Project:</strong> $PROJECT_NAME</p>
         </div>
 
         <div class="stats-grid">
@@ -1036,18 +1039,19 @@ main() {
     generate_html_report
     
     echo ""
-    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║                                🎉 SCAN COMPLETED! 🎉                                 ║${NC}"
-    echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${WHITE}║  Target Domain: ${CYAN}$TARGET_DOMAIN${WHITE}                                         ║${NC}"
-    echo -e "${WHITE}║  Results Directory: ${CYAN}$OUTPUT_DIR${WHITE}                                        ║${NC}"
-    echo -e "${WHITE}║  Max Processes: ${CYAN}$MAX_THREADS${WHITE}                                           ║${NC}"
-    echo -e "${WHITE}║  Main Report: ${CYAN}comprehensive_report.html${WHITE}                                ║${NC}"
-    echo -e "${WHITE}║  Shodan Report: ${CYAN}shodan_results.html${WHITE}                                    ║${NC}"
-    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════════════════════════╝${NC}"
+    echo "================================================================================"
+    echo -e "                ${GREEN}🎉 SCAN COMPLETED! 🎉${NC}                           "
+    echo "================================================================================"
+    echo -e "${WHITE}Target Domain: ${CYAN}$TARGET_DOMAIN${NC}"
+    echo -e "${WHITE}Results Directory: ${CYAN}$OUTPUT_DIR${NC}"
+    echo -e "${WHITE}Max Processes: ${CYAN}$MAX_THREADS${NC}"
+    echo -e "${WHITE}Main Report: ${CYAN}comprehensive_report.html${NC}"
+    echo -e "${WHITE}Shodan Report: ${CYAN}shodan_results.html${NC}"
+    echo "================================================================================"
     echo ""
     echo -e "${YELLOW}🚀 Developed by: $TEAM_NAME Subdomain Enumeration Tool - Mission Complete! ⚡${NC}"
     echo -e "${BLUE}📧 For support: TEAM VORTEX${NC}"
+    echo ""
 }
 
 # Trap to handle script interruption
