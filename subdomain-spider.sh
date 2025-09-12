@@ -447,32 +447,27 @@ parse_json_array() {
     echo "$json" | sed -n "s/.*\"$key\":\s*\[\([^]]*\)\].*/\1/p" | sed 's/[",]//g' | tr ' ' '\n' | grep -v '^$'
 }
 
-# Improved Shodan integration with better parsing
+# Fixed Shodan integration with proper API endpoint and HTML parsing fallback
 shodan_integration() {
     echo -e "${BLUE}[INFO]${NC} Starting Shodan integration with enhanced parsing..."
-    
     if [ -z "$SHODAN_API_KEY" ]; then
         echo -e "${YELLOW}[WARNING]${NC} Shodan API key not provided. Skipping Shodan integration."
         return
     fi
-    
     local public_ips_file="$OUTPUT_DIR/public_ips.txt"
     local shodan_results_html="$OUTPUT_DIR/shodan_results.html"
     local shodan_results_txt="$OUTPUT_DIR/shodan_results.txt"
-    
     if [ ! -f "$public_ips_file" ] || [ ! -s "$public_ips_file" ]; then
         echo -e "${YELLOW}[WARNING]${NC} No public IPs file found or file is empty."
         return
     fi
-    
     # Initialize text report
     echo "SHODAN RECONNAISSANCE REPORT" > "$shodan_results_txt"
     echo "=============================" >> "$shodan_results_txt"
     echo "Target Domain: $TARGET_DOMAIN" >> "$shodan_results_txt"
     echo "Generated: $(date)" >> "$shodan_results_txt"
     echo "" >> "$shodan_results_txt"
-    
-    # Create HTML header
+    # Create HTML header (keeping existing CSS)
     cat > "$shodan_results_html" << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
@@ -497,75 +492,154 @@ shodan_integration() {
         .service { background: #2ed573; color: white; padding: 5px 10px; border-radius: 5px; margin: 2px; font-size: 0.9em; display: inline-block; }
         .footer { text-align: center; margin-top: 40px; color: #a0a0a0; }
         .raw-data { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-top: 10px; font-family: 'Courier New', monospace; font-size: 0.9em; max-height: 200px; overflow-y: auto; }
+        .method-info { background: #333; padding: 15px; border-radius: 8px; margin: 10px 0; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🚀 TEAM VORTEX SHODAN REPORT ⚡</h1>
-        <p> Subdomain Enumeration - Advanced Reconnaissance</p>
+        <p>Subdomain Enumeration - Advanced Reconnaissance</p>
 EOF
-    
     echo "        <p>Target Domain: $TARGET_DOMAIN | Generated: $(date)</p>" >> "$shodan_results_html"
     echo "    </div>" >> "$shodan_results_html"
-    
     local ip_count=0
     local total_ips=$(wc -l < "$public_ips_file")
-    
     while IFS= read -r ip; do
         ((ip_count++))
         echo -e "${BLUE}[SHODAN]${NC} Querying $ip ($ip_count/$total_ips)..."
         echo "Processing IP $ip_count/$total_ips: $ip" >> "$shodan_results_txt"
         echo "----------------------------------------" >> "$shodan_results_txt"
-        
-        local shodan_response=$(curl -s -w "\nHTTP_CODE:%{http_code}" "https://api.shodan.io/shodan/host/$ip?key=$SHODAN_API_KEY")
-        local http_code=$(echo "$shodan_response" | grep "HTTP_CODE:" | cut -d: -f2)
-        local response_body=$(echo "$shodan_response" | sed '/HTTP_CODE:/d')
-        
-        if [ "$http_code" = "200" ] && [ -n "$response_body" ]; then
-            # Improved parsing with multiple methods
-            local org=$(echo "$response_body" | grep -o '"org":"[^"]*"' | cut -d'"' -f4 | head -1)
-            local country=$(echo "$response_body" | grep -o '"country_name":"[^"]*"' | cut -d'"' -f4 | head -1)
-            local city=$(echo "$response_body" | grep -o '"city":"[^"]*"' | cut -d'"' -f4 | head -1)
-            local isp=$(echo "$response_body" | grep -o '"isp":"[^"]*"' | cut -d'"' -f4 | head -1)
-            local asn=$(echo "$response_body" | grep -o '"asn":"[^"]*"' | cut -d'"' -f4 | head -1)
-            local os=$(echo "$response_body" | grep -o '"os":"[^"]*"' | cut -d'"' -f4 | head -1)
-            
-            # Extract ports array
-            local ports_raw=$(echo "$response_body" | grep -o '"ports":\[[^]]*\]' | sed 's/.*\[\(.*\)\].*/\1/' | tr ',' '\n' | sed 's/[^0-9]//g' | grep -v '^$')
-            
-            # Extract hostnames
-            local hostnames=$(echo "$response_body" | grep -o '"hostnames":\[[^]]*\]' | sed 's/.*\[\(.*\)\].*/\1/' | tr ',' '\n' | sed 's/["]//g' | grep -v '^$')
-            
-            # Extract vulnerabilities if available
-            local vulns=$(echo "$response_body" | grep -o '"vulns":\{[^}]*\}' | sed 's/.*{\(.*\)}.*/\1/' | tr ',' '\n' | sed 's/"//g' | grep -v '^$')
-            
-            # Set defaults for empty values
-            [ -z "$org" ] && org="N/A"
-            [ -z "$country" ] && country="N/A"
-            [ -z "$city" ] && city="N/A"
-            [ -z "$isp" ] && isp="N/A"
-            [ -z "$asn" ] && asn="N/A"
-            [ -z "$os" ] && os="N/A"
-            [ -z "$ports_raw" ] && ports_raw="None"
-            [ -z "$hostnames" ] && hostnames="None"
-            [ -z "$vulns" ] && vulns="None"
-            
-            # Write to text report
-            echo "IP: $ip" >> "$shodan_results_txt"
-            echo "Organization: $org" >> "$shodan_results_txt"
-            echo "Location: $city, $country" >> "$shodan_results_txt"
-            echo "ISP: $isp" >> "$shodan_results_txt"
-            echo "ASN: $asn" >> "$shodan_results_txt"
-            echo "OS: $os" >> "$shodan_results_txt"
-            echo "Ports: $(echo "$ports_raw" | tr '\n' ',' | sed 's/,$//')" >> "$shodan_results_txt"
-            echo "Hostnames: $(echo "$hostnames" | tr '\n' ',' | sed 's/,$//')" >> "$shodan_results_txt"
-            echo "Vulnerabilities: $(echo "$vulns" | tr '\n' ',' | sed 's/,$//')" >> "$shodan_results_txt"
-            echo "" >> "$shodan_results_txt"
-            
-            # Add to HTML with enhanced display
-            cat >> "$shodan_results_html" << EOF
+        # Try API first, then fallback to web scraping
+        local shodan_response=""
+        local http_code=""
+        local parsing_method=""
+        # Method 1: Try Shodan API (JSON)
+        if [ -n "$SHODAN_API_KEY" ]; then
+            echo -e "${CYAN}[DEBUG]${NC} Trying Shodan API for $ip..."
+            # Use -G and --data-urlencode for better handling of the API key
+            shodan_response=$(curl -s -w "\nHTTP_CODE:%{http_code}" "https://api.shodan.io/shodan/host/$ip" -G --data-urlencode "key=$SHODAN_API_KEY" 2>/dev/null)
+            http_code=$(echo "$shodan_response" | tail -n 1 | cut -d: -f2)
+            # Remove the status code line from the response body
+            shodan_response=$(echo "$shodan_response" | sed '$d')
+            if [ "$http_code" = "200" ] && echo "$shodan_response" | grep -q '"ip"'; then
+                parsing_method="API_JSON"
+                echo -e "${GREEN}[SUCCESS]${NC} API response received for $ip"
+            else
+                echo -e "${YELLOW}[INFO]${NC} API failed (HTTP: $http_code), trying web scraping..."
+                parsing_method="WEB_HTML"
+            fi
+        else
+            parsing_method="WEB_HTML"
+        fi
+
+        # Method 2: Web scraping fallback (HTML parsing)
+        if [ "$parsing_method" = "WEB_HTML" ]; then
+            echo -e "${CYAN}[DEBUG]${NC} Using web scraping for $ip..."
+            shodan_response=$(curl -s "https://www.shodan.io/host/$ip" 2>/dev/null)
+            http_code="200" # Assume success for scraping if we get content
+            # Basic check for content
+            if echo "$shodan_response" | grep -q "Last Seen:"; then
+                parsing_method="WEB_HTML"
+                echo -e "${GREEN}[SUCCESS]${NC} Web page response received for $ip"
+            else
+                echo -e "${RED}[ERROR]${NC} Both API and web scraping failed for $ip"
+                parsing_method="FAILED"
+            fi
+        fi
+
+        # Parse based on method used
+        local org="" country="" city="" isp="" asn="" os="" ports_raw="" hostnames="" vulns=""
+
+        if [ "$parsing_method" = "API_JSON" ]; then
+            # JSON parsing (original method - FIXED regex)
+            echo -e "${CYAN}[DEBUG]${NC} Parsing JSON content for $ip..."
+            org=$(echo "$shodan_response" | grep -o '"org":"[^"]*"' | cut -d'"' -f4 | head -1 | sed 's/\\//g') # Fix escaping
+            country=$(echo "$shodan_response" | grep -o '"country_name":"[^"]*"' | cut -d'"' -f4 | head -1 | sed 's/\\//g')
+            city=$(echo "$shodan_response" | grep -o '"city":"[^"]*"' | cut -d'"' -f4 | head -1 | sed 's/\\//g')
+            isp=$(echo "$shodan_response" | grep -o '"isp":"[^"]*"' | cut -d'"' -f4 | head -1 | sed 's/\\//g')
+            asn=$(echo "$shodan_response" | grep -o '"asn":"[^"]*"' | cut -d'"' -f4 | head -1 | sed 's/\\//g')
+            os=$(echo "$shodan_response" | grep -o '"os":"[^"]*"' | cut -d'"' -f4 | head -1 | sed 's/\\//g')
+            # Fix regex for ports array
+            ports_raw=$(echo "$shodan_response" | sed -n 's/.*"ports" *: *\[\([^]]*\)\].*/\1/p' | tr ',' ' ' | sed 's/[^0-9 ]//g' | tr -s ' ' | sed 's/^ *//;s/ *$//')
+            # Fix regex for hostnames array
+            hostnames=$(echo "$shodan_response" | sed -n 's/.*"hostnames" *: *\[\([^]]*\)\].*/\1/p' | sed 's/"//g' | tr ',' ' ' | sed 's/^ *//;s/ *$//')
+            # Fix regex for vulns object (if present)
+            vulns=$(echo "$shodan_response" | sed -n 's/.*"vulns" *: *{\([^}]*\)}.*/\1/p' | sed 's/"[^"]*"://g' | tr ',' ' ' | sed 's/^ *//;s/ *$//' | head -c 200) # Limit length
+
+        elif [ "$parsing_method" = "WEB_HTML" ]; then
+            # HTML parsing (new method - CORRECTED patterns based on output.txt)
+            echo -e "${CYAN}[DEBUG]${NC} Parsing HTML content for $ip..."
+            # Extract organization (corrected pattern)
+            # Look for <label>Organization</label> followed by <div><strong><a>VALUE</a></strong></div>
+            org=$(echo "$shodan_response" | sed -n '/<label>Organization<\/label>/,/<\/div>/ s/.*<a[^>]*>\([^<]*\)<\/a>.*/\1/p' | head -1 | sed 's/&amp;/\&/g; s/</</g; s/>/>/g' | xargs)
+            # If org is still empty, try alternative pattern or Cloud Provider
+            if [ -z "$org" ]; then
+                 org=$(echo "$shodan_response" | sed -n '/<label>Cloud Provider<\/label>/,/<\/div>/ s/.*<a[^>]*>\([^<]*\)<\/a>.*/\1/p' | head -1 | sed 's/&amp;/\&/g; s/</</g; s/>/>/g' | xargs)
+            fi
+
+            # Extract country (corrected pattern)
+            country=$(echo "$shodan_response" | sed -n '/<label>Country<\/label>/,/<\/div>/ s/.*<a[^>]*>\([^<]*\)<\/a>.*/\1/p' | head -1 | sed 's/&amp;/\&/g; s/</</g; s/>/>/g' | xargs)
+
+            # Extract city (corrected pattern)
+            city=$(echo "$shodan_response" | sed -n '/<label>City<\/label>/,/<\/div>/ s/.*<a[^>]*>\([^<]*\)<\/a>.*/\1/p' | head -1 | sed 's/&amp;/\&/g; s/</</g; s/>/>/g' | xargs)
+
+            # Extract ISP (corrected pattern)
+            isp=$(echo "$shodan_response" | sed -n '/<label>ISP<\/label>/,/<\/div>/ s/.*<a[^>]*>\([^<]*\)<\/a>.*/\1/p' | head -1 | sed 's/&amp;/\&/g; s/</</g; s/>/>/g' | xargs)
+
+            # Extract ASN (corrected pattern)
+            asn=$(echo "$shodan_response" | sed -n '/<label>ASN<\/label>/,/<\/div>/ s/.*<a[^>]*>\([^<]*\)<\/a>.*/\1/p' | head -1 | sed 's/&amp;/\&/g; s/</</g; s/>/>/g' | xargs)
+
+            # Extract hostnames (simple text extract)
+            # Look for Hostnames label and extract the text within the div
+            hostnames=$(echo "$shodan_response" | sed -n '/<label>Hostnames<\/label>/,/<\/div>/ { /<label>/d; s/.*<div>\([^<]*\)<\/div>.*/\1/p; }' | head -1 | sed 's/&amp;/\&/g; s/</</g; s/>/>/g' | xargs)
+
+            # Extract ports from the ports section (corrected pattern)
+            # Look for <div id="ports"> and extract all <a> tags with class bg-primary
+            ports_raw=$(echo "$shodan_response" | sed -n '/<div id="ports">/,/<\/div>/ s/<a[^>]*class="[^"]*bg-primary[^"]*"[^>]*>\([^<]*\)<\/a>/\1 /g p' | tr -d '\n' | sed 's/ $//' | xargs)
+
+            # Extract OS (if available, often not directly labeled)
+            os="N/A" # Hard to extract reliably from HTML without specific class/id
+
+            # Extract vulnerabilities (if available, often requires login or specific section)
+            vulns="N/A" # Hard to extract reliably from public HTML without login
+
+            echo -e "${CYAN}[DEBUG]${NC} Extracted - Org: '$org', Country: '$country', City: '$city', ISP: '$isp', Ports: '$ports_raw'"
+
+        else
+            echo -e "${RED}[ERROR]${NC} Failed to parse data for $ip"
+        fi
+
+        # Set defaults for empty values
+        [ -z "$org" ] && org="N/A"
+        [ -z "$country" ] && country="N/A"
+        [ -z "$city" ] && city="N/A"
+        [ -z "$isp" ] && isp="N/A"
+        [ -z "$asn" ] && asn="N/A"
+        [ -z "$os" ] && os="N/A"
+        [ -z "$ports_raw" ] && ports_raw="None detected"
+        [ -z "$hostnames" ] && hostnames="None"
+        [ -z "$vulns" ] && vulns="None detected"
+
+        # Write to text report
+        echo "IP: $ip" >> "$shodan_results_txt"
+        echo "Parsing Method: $parsing_method" >> "$shodan_results_txt"
+        echo "Organization: $org" >> "$shodan_results_txt"
+        echo "Location: $city, $country" >> "$shodan_results_txt"
+        echo "ISP: $isp" >> "$shodan_results_txt"
+        echo "ASN: $asn" >> "$shodan_results_txt"
+        echo "OS: $os" >> "$shodan_results_txt"
+        echo "Ports: $ports_raw" >> "$shodan_results_txt"
+        echo "Hostnames: $hostnames" >> "$shodan_results_txt"
+        echo "Vulnerabilities: $vulns" >> "$shodan_results_txt"
+        echo "" >> "$shodan_results_txt"
+
+        # Add to HTML with enhanced display
+        cat >> "$shodan_results_html" << EOF
     <div class="ip-container">
         <div class="ip-header">🎯 IP Address: $ip</div>
+        <div class="method-info">
+            <strong>📊 Data Source:</strong> $parsing_method
+        </div>
         <div class="info-grid">
             <div class="info-card">
                 <div class="info-label">🏢 Organization</div>
@@ -589,101 +663,64 @@ EOF
             </div>
             <div class="info-card">
                 <div class="info-label">🏠 Hostnames</div>
-                <div class="info-value">$(echo "$hostnames" | head -3 | tr '\n' '<br>')</div>
+                <div class="info-value">$hostnames</div>
             </div>
         </div>
         <div class="ports">
             <strong>🔓 Open Ports:</strong><br>
 EOF
-            
-            # Add ports with better formatting
-            if [ "$ports_raw" != "None" ]; then
-                echo "$ports_raw" | while read -r port; do
-                    [ -n "$port" ] && echo "            <span class=\"port\">$port</span>" >> "$shodan_results_html"
-                done
-            else
-                echo "            <span class=\"port\">No open ports detected</span>" >> "$shodan_results_html"
-            fi
-            
-            # Add vulnerabilities section
-            cat >> "$shodan_results_html" << EOF
+        # Add ports with better formatting
+        if [ "$ports_raw" != "None detected" ] && [ "$ports_raw" != "N/A" ] && [ -n "$ports_raw" ]; then
+            # Iterate through space-separated ports
+            for port in $ports_raw; do
+                if [ -n "$port" ]; then
+                    echo "            <span class=\"port\">$port</span>" >> "$shodan_results_html"
+                fi
+            done
+        else
+            echo "            <span class=\"port\">No open ports detected</span>" >> "$shodan_results_html"
+        fi
+        # Add vulnerabilities section
+        cat >> "$shodan_results_html" << EOF
         </div>
-        
         <div class="ports" style="margin-top: 15px;">
             <strong>⚠️ Vulnerabilities:</strong><br>
 EOF
-            
-            if [ "$vulns" != "None" ]; then
-                echo "$vulns" | head -5 | while read -r vuln; do
-                    [ -n "$vuln" ] && echo "            <span class=\"vulnerability\">$vuln</span>" >> "$shodan_results_html"
-                done
-            else
-                echo "            <span style=\"color: #2ed573;\">✅ No known vulnerabilities detected</span>" >> "$shodan_results_html"
-            fi
-            
-            # Add raw data section for debugging
-            cat >> "$shodan_results_html" << EOF
-        </div>
-        
-        <details style="margin-top: 15px;">
-            <summary style="cursor: pointer; color: #667eea;">📋 Raw Shodan Data (Click to expand)</summary>
-            <div class="raw-data">
-                $(echo "$response_body" | head -20)
-            </div>
-        </details>
-    </div>
-EOF
-            
-            echo -e "${GREEN}[SHODAN SUCCESS]${NC} $ip - $org ($city, $country) - Ports: $(echo "$ports_raw" | wc -l)"
-            
-        elif [ "$http_code" = "404" ]; then
-            echo -e "${YELLOW}[SHODAN]${NC} No data available for $ip"
-            echo "IP: $ip - No data available (404)" >> "$shodan_results_txt"
-            echo "" >> "$shodan_results_txt"
-            
-            cat >> "$shodan_results_html" << EOF
-    <div class="ip-container">
-        <div class="ip-header">❌ IP Address: $ip</div>
-        <div class="info-value" style="color: #f39c12;">⚠️ No data available in Shodan database</div>
-    </div>
-EOF
+        if [ "$vulns" != "None detected" ] && [ "$vulns" != "N/A" ] && [ -n "$vulns" ]; then
+            # Limit displayed vulns to prevent huge output
+            echo "$vulns" | head -5 | while read -r vuln; do
+                [ -n "$vuln" ] && echo "            <span class=\"vulnerability\">$vuln</span>" >> "$shodan_results_html"
+            done
         else
-            echo -e "${RED}[SHODAN ERROR]${NC} Failed to query $ip (HTTP: $http_code)"
-            echo "IP: $ip - Query failed (HTTP: $http_code)" >> "$shodan_results_txt"
-            echo "" >> "$shodan_results_txt"
-            
-            cat >> "$shodan_results_html" << EOF
-    <div class="ip-container">
-        <div class="ip-header">⚠️ IP Address: $ip</div>
-        <div class="info-value" style="color: #ff6b6b;">❌ API Error (HTTP: $http_code)</div>
-        <details style="margin-top: 10px;">
-            <summary style="cursor: pointer;">Debug Info</summary>
-            <div class="raw-data">$(echo "$response_body" | head -10)</div>
-        </details>
-    </div>
-EOF
+            echo "            <span style=\"color: #2ed573;\">✅ No known vulnerabilities detected</span>" >> "$shodan_results_html"
         fi
-        
+        # Close the IP container
+        echo "        </div>" >> "$shodan_results_html"
+        echo "    </div>" >> "$shodan_results_html"
+
+        # Display results
+        if [ "$org" != "N/A" ] || [ "$country" != "N/A" ]; then
+            echo -e "${GREEN}[SHODAN SUCCESS]${NC} $ip - $org ($city, $country) - Method: $parsing_method"
+        else
+            echo -e "${YELLOW}[SHODAN]${NC} Limited data for $ip - Method: $parsing_method"
+        fi
         sleep "$API_RATE_LIMIT"  # Rate limiting
     done < "$public_ips_file"
-    
     # Close HTML
     cat >> "$shodan_results_html" << EOF
     <div class="footer">
         <p>Generated by Team Vortex Subdomain Enumeration Tool</p>
-        <p>Subdomains Enumeration Tool</p>
-        <p>Enhanced Shodan Integration with Detailed Parsing</p>
+        <p>Enhanced Shodan Integration with API + Web Scraping</p>
+        <p>Automatic fallback from API to HTML parsing for comprehensive data collection</p>
     </div>
 </body>
 </html>
 EOF
-    
-    echo -e "${GREEN}[SUCCESS]${NC} Shodan integration completed."
+    echo -e "${GREEN}[SUCCESS]${NC} Shodan integration completed with hybrid parsing approach."
     echo -e "${CYAN}[REPORTS]${NC} HTML report: $shodan_results_html"
     echo -e "${CYAN}[REPORTS]${NC} Text report: $shodan_results_txt"
-    
     # Display completion banner
-    display_completion_banner "SHODAN INTEGRATION" "Successfully generated enhanced reconnaissance reports"
+    display_completion_banner "ENHANCED SHODAN INTEGRATION" "Successfully implemented API + HTML parsing hybrid approach"
 }
 
 # Function to generate comprehensive HTML report
