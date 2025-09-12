@@ -75,6 +75,10 @@ output/
 ## Screenshots 📸
 
 <img width="840" height="334" alt="image" src="https://github.com/user-attachments/assets/405bd003-dcf4-4451-abb7-9662b22fdb11" />
+### Identifying Live & Dead Subdomains
+<img width="484" height="388" alt="image" src="https://github.com/user-attachments/assets/ae2f916c-7e2e-4b10-a0d1-13bae94aec37" />
+### Extracting IP Addresses
+<img width="641" height="500" alt="image" src="https://github.com/user-attachments/assets/4a38a4fc-ed1a-4486-81ad-cad127098aa0" />
 
 
 ## Authors ✨
