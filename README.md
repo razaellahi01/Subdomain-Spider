@@ -75,10 +75,14 @@ output/
 ## Screenshots 📸
 
 <img width="840" height="334" alt="image" src="https://github.com/user-attachments/assets/405bd003-dcf4-4451-abb7-9662b22fdb11" />
-### Identifying Live & Dead Subdomains
+<img width="828" height="580" alt="image" src="https://github.com/user-attachments/assets/e81896df-07ed-48af-8424-4accadfd5d90" />
 <img width="484" height="388" alt="image" src="https://github.com/user-attachments/assets/ae2f916c-7e2e-4b10-a0d1-13bae94aec37" />
-### Extracting IP Addresses
 <img width="641" height="500" alt="image" src="https://github.com/user-attachments/assets/4a38a4fc-ed1a-4486-81ad-cad127098aa0" />
+<img width="1162" height="609" alt="image" src="https://github.com/user-attachments/assets/21207ea1-abd3-4a0e-bf7e-61f08d36b8af" />
+<img width="1158" height="684" alt="image" src="https://github.com/user-attachments/assets/d3c46b56-a3a8-4a16-88af-b3360a87a664" />
+<img width="1159" height="985" alt="image" src="https://github.com/user-attachments/assets/3b323563-89e0-47c6-927b-10cfda65f55c" />
+<img width="1144" height="837" alt="image" src="https://github.com/user-attachments/assets/769a198c-0dd4-4782-acb5-9af4c42fa931" />
+
 
 
 ## Authors ✨
