@@ -93,7 +93,7 @@ output/
 - **Laiqa Rafay**
 - **Jabir Ishaq**
 - **Abdlrehman Farid**
-- **Israr Khan**
+- **Muhammad Israr**
 
 ## Disclaimer ⚠️
 
